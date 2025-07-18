@@ -1,0 +1,23 @@
+PLOS/
+├── README.md                 ← Project overview, install, quickstart
+├── docs/
+│   ├── index.md              ← Docs homepage/introduction
+│   ├── getting-started.md    ← Setup, config, first run
+│   ├── architecture.md       ← How the pieces fit together (backend, client, database, etc.)
+│   ├── api/
+│   │   ├── index.md
+│   │   ├── backend.md        ← Backend API endpoints (e.g., /hello, /test-emails)
+│   │   └── schema.md         ← Example API requests/responses
+│   ├── modules/
+│   │   ├── email.md          ← Email ingestion: design, how it works, config
+│   │   ├── calendar.md
+│   │   ├── health.md
+│   │   ├── finance.md
+│   │   └── ...
+│   ├── config.md             ← How to configure (env vars, files, etc.)
+│   ├── deployment.md         ← Running in prod, Docker, etc.
+│   ├── security.md           ← Security/privacy practices
+│   └── troubleshooting.md    ← Common problems, FAQ
+├── backend/
+├── desktop-client/
+└── ...
