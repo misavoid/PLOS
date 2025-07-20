@@ -7,3 +7,4 @@ rootProject.name = "PLOS"
 
 include("backend")
 include("desktop-client")
+include("common")

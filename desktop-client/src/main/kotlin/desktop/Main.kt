@@ -1,9 +1,11 @@
 package desktop
 
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import desktop.cards.EmailDashboardCard
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -37,6 +39,9 @@ fun main() = application {
     }
 
     Window(onCloseRequest = ::exitApplication, title = "PLOS Dashboard") {
+        MaterialTheme {
+            EmailDashboardCard()
+        }
         Text(message)
     }
 }

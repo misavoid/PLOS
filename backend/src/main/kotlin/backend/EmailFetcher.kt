@@ -3,14 +3,8 @@ package backend
 import jakarta.mail.*
 import jakarta.mail.search.FlagTerm
 import java.util.Properties
+import email.SimpleEmail
 
-@kotlinx.serialization.Serializable
-data class SimpleEmail(
-    val messageId: String,
-    val subject: String?,
-    val from: String?,
-    val sentDate: String?
-)
 
 fun fetchEmails(user: String, password: String): List<SimpleEmail> {
     // Enable JavaMail debug output
