@@ -38,8 +38,8 @@ fun main() {
                 val emails = fetchEmails(
                     user = user,
                     password = password
-                )
-                call.respond(emails)
+                ).toList()
+                call.respond(emails.toList())
             }
         }
     }.start(wait = true)
