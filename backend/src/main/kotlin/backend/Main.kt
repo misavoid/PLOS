@@ -10,6 +10,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import io.github.cdimascio.dotenv.dotenv
+import io.ktor.http.ContentType
 
 
 fun main() {
@@ -40,6 +41,21 @@ fun main() {
                     password = password
                 ).toList()
                 call.respond(emails.toList())
+            }
+
+            get("/calendar") {
+                val user = dotenv()["APPLE_USERNAME"]
+                val password = dotenv()["PLOS_CALENDAR_PW"]
+                val calendarUrl = dotenv()["PLOS_CALENDAR_URL"]
+                val xml = fetchICalEvents(user, password, calendarUrl) // Pass them as parameters!
+
+                if (user.isNullOrBlank() || password.isNullOrBlank()) {
+                    call.respondText("Missing environment variables!", status = HttpStatusCode.InternalServerError)
+                    return@get
+                }
+
+
+                call.respondText(xml, ContentType.Text.Xml)
             }
         }
     }.start(wait = true)
