@@ -15,6 +15,7 @@ import io.github.cdimascio.dotenv.dotenv
 fun main() {
     embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) { json() }
+        System.setProperty("mail.debug", "true")
 
         routing {
             get("/hello") {
@@ -31,8 +32,11 @@ fun main() {
                     return@get
                 }
 
+                println("User: >$user< (${user.length} chars)")
+                println("Password: (${password.length} chars)")
+
                 val emails = fetchEmails(
-                    username = user,
+                    user = user,
                     password = password
                 )
                 call.respond(emails)

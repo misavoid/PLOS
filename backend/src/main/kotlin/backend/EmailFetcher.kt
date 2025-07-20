@@ -1,6 +1,7 @@
 package backend
 
 import jakarta.mail.*
+import jakarta.mail.search.FlagTerm
 import java.util.Properties
 
 data class SimpleEmail(
@@ -10,15 +11,15 @@ data class SimpleEmail(
     val sentDate: String?
 )
 
-fun fetchEmails(username: String, password: String): List<SimpleEmail> {
+fun fetchEmails(user: String, password: String): List<SimpleEmail> {
     val props = Properties()
     props["mail.imap.host"] = "imap.mail.me.com"
     props["mail.imap.port"] = "993"
-    props["mail.imap.ssl.enable"] = "true"
+
 
     val session = Session.getDefaultInstance(props, object : Authenticator() {
         override fun getPasswordAuthentication(): PasswordAuthentication {
-            return PasswordAuthentication(username, password)
+            return PasswordAuthentication(user, password)
         }
     })
 
@@ -29,12 +30,10 @@ fun fetchEmails(username: String, password: String): List<SimpleEmail> {
     inbox.open(Folder.READ_ONLY)
 
     // only fetch unseen mails
-    val messages = inbox.getMessages(
-        (inbox.messageCount - 400 + 1).coerceAtLeast(1),
-        inbox.messageCount
-    )
+    val messages = inbox.search(FlagTerm(Flags(Flags.Flag.SEEN), false))
+    val last20 = messages.takeLast(20)
 
-    val result = messages.map { msg -> SimpleEmail(
+    val result = last20.map { msg -> SimpleEmail(
         messageId = (msg.getHeader("Message-ID")?.firstOrNull() ?: ""),
         subject = msg.subject,
         from = msg.from.joinToString { it.toString() },
