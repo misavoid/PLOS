@@ -1,5 +1,7 @@
 package backend
 
+import calendar.EventDto
+
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -44,22 +46,30 @@ fun main() {
             }
 
             get("/calendar") {
-                val user = dotenv()["APPLE_USERNAME"]
-                val password = dotenv()["PLOS_CALENDAR_PW"]
-                val calendarUrl = dotenv()["PLOS_CALENDAR_URL"]
-                val xml = fetchICalEvents(user, password, calendarUrl) // Pass them as parameters!
+                try {
+                    val dotenv = dotenv()
+                    val user = dotenv["APPLE_USERNAME"] ?: error("No user set")
+                    val password = dotenv["APPSPECIFIC_PASSWORD_PLOS"] ?: error("No password set")
+                    val calendarUrl = dotenv["PLOS_CALENDAR_URL"] ?: error("No calendar URL set")
 
-                if (user.isNullOrBlank() || password.isNullOrBlank()) {
-                    call.respondText("Missing environment variables!", status = HttpStatusCode.InternalServerError)
-                    return@get
+                    val xml = fetchICalEvents(user, password, calendarUrl)
+                    println("Fetched calendar XML: ${xml.take(250)}...") // show first 250 chars for debugging
+
+
+                    val events = parseIcsFromXmlResponse(xml)
+                    println("Parsed events: $events")
+
+                    call.respond(events)
+                } catch (e: Exception) {
+                    e.printStackTrace() // print to backend logs
+                    call.respondText("Server error: ${e.message}", status = HttpStatusCode.InternalServerError)
                 }
-
-
-                call.respondText(xml, ContentType.Text.Xml)
             }
+
         }
     }.start(wait = true)
 }
 
 @Serializable
 data class Message(val text: String)
+

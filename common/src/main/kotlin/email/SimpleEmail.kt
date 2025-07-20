@@ -7,3 +7,5 @@ data class SimpleEmail(
     val from: String?,
     val sentDate: String?
 )
+
+// TODO: looks like the from field is currently using the adress the email is adressed to (so mine)
